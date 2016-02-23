@@ -1,0 +1,4 @@
+// golfed
+disp"Hello, World!"
+// ungolfed
+disp("Hello, World");
