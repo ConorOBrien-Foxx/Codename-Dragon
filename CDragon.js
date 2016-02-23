@@ -74,8 +74,9 @@ var OPERATORS = {
 };
 
 var KEYWORDS = ["max", "sin", "disp", "str", "flatten", "<-", "->", "=", "+<>", "'<>", ",<>", "<>", "~", "inv"];
-
 function tokenize(string){
+	// elimainate whitespace not in quotes
+	string = string.replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g,"");
 	return string.match(RegExp(KEYWORDS.concat(Object.keys(OPERATORS)).map(RegExp.escape).join("|")+"|\\d+|[&+,-/*^()]|\\s+|\\w+|.+?","g"));
 }
 
@@ -171,5 +172,6 @@ function wrapper(code){
 	var world = {pi: Math.PI, e: Math.E};
 	for(var i=0;i<code.length;i++){
 		var line = parse(code[i],world);
+		console.log(world);
 	}
 }
