@@ -74,11 +74,20 @@ var OPERATORS = {
 };
 
 var KEYWORDS = ["max", "sin", "disp", "str", "flatten", "<-", "->", "=", "+<>", "'<>", ",<>", "<>", "~", "inv"];
+
 function tokenize(string){
 	return string.match(RegExp(KEYWORDS.concat(Object.keys(OPERATORS)).map(RegExp.escape).join("|")+"|\\d+|[&+,-/*^()]|\\s+|\\w+|.+?","g"));
 }
 
 var FUNCTIONS = {"sin":sin,"max":max,"disp":disp,"flatten":flatten,"~":flip,"str":str,"->":map,"inv":inverse};
+
+var props = ["slice","split","join"].forEach(function(e){
+	KEYWORDS.push(e);
+	FUNCTIONS[e] = function(a,b,c,d){
+		for(var f=[],g=0;g<argments.length;f.push(arguments[g++]));
+		return a[e].apply(window,f.slice(1));
+	}
+});
 
 function shunt(string){
 	var tokens = tokenize(string), oQueue = [], stack = [], token, o1, o2;
