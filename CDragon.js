@@ -51,7 +51,7 @@ function map(x,f){
 	
 }
 function inverse(a){
-	return typeof a.slice?a.slice(1):1/a;
+	return a.slice?a.slice(1):1/a;
 }
 
 var OPERATORS = {
