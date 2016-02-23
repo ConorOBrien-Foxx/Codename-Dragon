@@ -1,5 +1,5 @@
 // gofled
 disp~(a=str1..<>).+a
 // ungolfed
-a = str(1...<>);
+a <- str(1...<>);
 disp(~a .+ a);
