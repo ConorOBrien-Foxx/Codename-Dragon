@@ -50,7 +50,7 @@ function str(x){
 function map(x,f){
 	
 }
-function invert(a){
+function inverse(a){
 	return typeof a.slice?a.slice(1):1/a;
 }
 
