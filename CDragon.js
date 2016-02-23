@@ -1,12 +1,16 @@
 // let's do infix!
 
 function pow(a,b){return Math.pow(a,b);}
+function intPow(a,b){return Math.pow(a,b)|0;}
 function mul(a,b){return a*b;}
+function intMul(a,b){return (+a)*(+b)|0;}
 function div(a,b){return a/b;}
+function intDiv(a,b){return (+a)/(+b)|0;}
 function add(a,b){return a+b;}
+function intAdd(a,b){return (+a)+(+b)|0}
 function sub(a,b){return a-b;}
+function intSub(a,b){return (+a0)-(+b)|0;}
 function and(a,b){return a&&b;}
-function intAdd(a,b){return (+a|0)+(+b|0)}
 function flip(x){return typeof x==="string"?x.split("").reverse().join(""):typeof x==="number"?+flip(x+""):x.reverse()}
 function range(a,b){
 	// from cyoce
@@ -46,6 +50,9 @@ function str(x){
 function map(x,f){
 	
 }
+function invert(a){
+	return typeof a.slice?a.slice(1):1/a;
+}
 
 var OPERATORS = {
 	"<-": [-Infinity, 0, set],
@@ -56,18 +63,22 @@ var OPERATORS = {
 	"*": [3, 0, mul],
 	"/": [3, 0, div],
 	".+": [2.5, 0, intAdd],
+	".-": [2.5, 0, intSub],
+	".*": [2.5, 0, intMul],
+	"./": [2.5, 0, intDiv],
+	".^": [2.5, 0, intPow],
 	"+": [2, 0, add],
 	"-": [2, 0, sub],
 	",": [1, 0, arr],
 	".": [0.5, 1, dec]
 };
 
-var KEYWORDS = ["max", "sin", "disp", "str", "flatten", "<-", "->", "=", "+<>", "'<>", ",<>", "<>", "~"];
+var KEYWORDS = ["max", "sin", "disp", "str", "flatten", "<-", "->", "=", "+<>", "'<>", ",<>", "<>", "~", "inv"];
 function tokenize(string){
 	return string.match(RegExp(KEYWORDS.concat(Object.keys(OPERATORS)).map(RegExp.escape).join("|")+"|\\d+|[&+,-/*^()]|\\s+|\\w+|.+?","g"));
 }
 
-var FUNCTIONS = {"sin":sin,"max":max,"disp":disp,"flatten":flatten,"~":flip,"str":str,"->":map};
+var FUNCTIONS = {"sin":sin,"max":max,"disp":disp,"flatten":flatten,"~":flip,"str":str,"->":map,"inv":inverse};
 
 function shunt(string){
 	var tokens = tokenize(string), oQueue = [], stack = [], token, o1, o2;
