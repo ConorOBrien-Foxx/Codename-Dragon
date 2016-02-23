@@ -53,12 +53,16 @@ function map(x,f){
 function inverse(a){
 	return a.slice?a.slice(1):1/a;
 }
+function equal(x,y){
+	return x==y;
+}
 
 var OPERATORS = {
 	"<-": [-Infinity, 0, set],
 	"=": [-Infinity, 0, set],
 	"..": [6, 0, range],
 	"&": [5, 0, and],
+	"is": [4.5, 0, equal],
 	"^": [4, 1, pow],
 	"*": [3, 0, mul],
 	"/": [3, 0, div],
@@ -73,14 +77,14 @@ var OPERATORS = {
 	".": [0.5, 1, dec]
 };
 
-var KEYWORDS = ["max", "sin", "disp", "str", "flatten", "<-", "->", "=", "+<>", "'<>", ",<>", "<>", "~", "inv"];
+var KEYWORDS = ["max", "sin", "disp", "str", "flatten", "<-", "->", "=", "+<>", "'<>", ",<>", "<>", "~", "inv", "!", "jump"];
 function tokenize(string){
 	// elimainate whitespace not in quotes
 	string = string.replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g,"");
 	return string.match(RegExp(KEYWORDS.concat(Object.keys(OPERATORS)).map(RegExp.escape).join("|")+"|\\d+|[&+,-/*^()]|\\s+|\\w+|.+?","g"));
 }
 
-var FUNCTIONS = {"sin":sin,"max":max,"disp":disp,"flatten":flatten,"~":flip,"str":str,"->":map,"inv":inverse};
+var FUNCTIONS = {"sin":sin,"max":max,"disp":disp,"flatten":flatten,"~":flip,"str":str,"->":map,"jump":true,"inv":inverse,"!":function(e){return !e}};
 
 var props = ["slice","split","join"].forEach(function(e){
 	KEYWORDS.push(e);
@@ -102,7 +106,7 @@ function shunt(string){
 			oQueue.push(s.slice(1,-1));
 		} else if(!isNaN(parseFloat(token))&&isFinite(token)){
 			oQueue.push(token);
-		} else if(FUNCTIONS[token]){
+		} else if(FUNCTIONS[token]||token === "jump"){
 			stack.push(token);
 		//} else if(token === ","){
 		//	while(stack[stack.length-1] !== "(" && stack.length){
@@ -136,7 +140,7 @@ function shunt(string){
 	return oQueue;
 }
 
-function parse(equ,vars){
+function parse(equ,vars,lin){
 	vars = vars || {};
 	var lines = equ.split("`"), line, stack, token, res = [];
 	for(var i=0;i<lines.length;i++){
@@ -144,7 +148,10 @@ function parse(equ,vars){
 		stack = [];
 		while(line.length){
 			token = line.shift();
-			if(typeof vars[token] !== "undefined"){
+			if(token === "jump"){
+				vars._i = stack.pop();
+				alert("JUMPING TO "+vars._i);
+			} else if(typeof vars[token] !== "undefined"){
 				stack.push(vars[token]);
 			} else if(!isNaN(parseFloat(token))&&isFinite(token)) stack.push(+token);
 			else if(["<-","="].indexOf(token)>=0){
@@ -171,7 +178,10 @@ function wrapper(code){
 	code = code.split(";");
 	var world = {pi: Math.PI, e: Math.E};
 	for(var i=0;i<code.length;i++){
+		world._i = i;
+		console.log(code);
 		var line = parse(code[i],world);
-		console.log(world);
+		i = world._i || i;
+		console.log(world,code.length);
 	}
 }
