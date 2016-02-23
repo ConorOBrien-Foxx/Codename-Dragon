@@ -85,7 +85,7 @@ var FUNCTIONS = {"sin":sin,"max":max,"disp":disp,"flatten":flatten,"~":flip,"str
 var props = ["slice","split","join"].forEach(function(e){
 	KEYWORDS.push(e);
 	FUNCTIONS[e] = function(a,b,c,d){
-		for(var f=[],g=0;g<argments.length;f.push(arguments[g++]));
+		for(var f=[],g=0;g<arguments.length;f.push(arguments[g++]));
 		return a[e].apply(window,f.slice(1));
 	}
 });
